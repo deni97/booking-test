@@ -1,0 +1,65 @@
+{
+    "" : {
+        "controller": "User",
+        "method": "getForm"
+    },
+    "reservation": {
+        "controller": "User",
+        "method": "getForm"
+    },
+    "reserve": {
+        "controller": "User",
+        "method": "reserve"
+    },
+    "getTimeJS/:id/:date": {
+        "controller": "User",
+        "method": "getTimeJS",
+        "params": {
+            "id": "number",
+            "date": "number"
+        }
+    },
+    "management": {
+        "controller": "Management",
+        "method": "getReservations",
+        "login": true
+    },
+    "management/:id": {
+        "controller": "Management",
+        "method": "getReservationById",
+        "login": true,
+        "params": {
+            "id": "number"
+        }
+    },
+    "archive/:id": {
+        "controller": "Management",
+        "method": "archive",
+        "login": true,
+        "params": {
+            "id": "number"
+        }
+    },
+    "schedule": {
+        "controller": "Management",
+        "method": "getSchedule",
+        "login": true
+    },
+    "setSchedule": {
+        "controller": "Management",
+        "method": "setSchedule",
+        "login": true
+    },
+    "login": {
+        "controller": "Management",
+        "method": "login"
+    },
+    "logout": {
+        "controller": "Management",
+        "method": "logout"
+    },
+    "register": {
+        "controller": "TESTRegister",
+        "method": "register"
+    }
+}

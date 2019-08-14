@@ -1,0 +1,17 @@
+
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div style="border: solid 1px">
+        <a href="/management">Заявки</a>
+        <a href="/schedule">Расписание</a>
+        <a href="/register">Регистрация</a>
+        Е Д А
+        <a href="/logout" style="float: right;">Выйти из системы</a>
+        <hr>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,187 @@
+{% extends 'userLayout.twig' %}
+
+{% block title %}
+    Е д а
+{% endblock %}
+
+{% block styles %}
+<style>
+    #name, #phone {
+        display: block;
+        width: 100%;
+    }
+
+    input {
+        padding: .5em;
+        margin: .5em;
+    }
+
+    #durationInput {
+        vertical-align: bottom;
+        width: 8em;
+    }
+
+    #tableInput {
+        width: 150px;
+    }
+
+    .material-icons {
+        vertical-align: middle;
+    }
+
+    #check {
+        display: inline;
+        float: right;
+    }
+
+    select:required:invalid {
+        color: gray;
+    }
+    option[value=""][disabled] {
+        display: none;
+    }
+    option {
+        color: black;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    {% if errorMessage is defined %}
+        <strong>{{ errorMessage|raw }}</strong>
+    {% endif %}
+    <form action="/reserve" method="post" autocomplete="off">
+        <h1>Бронирование стола</h1>
+
+        <h2>Контакты</h2>
+        <input type="text" name="name" placeholder="Имя"
+        id="name" 
+        required
+        {% if name is defined %}
+            value="{{ name }}"
+        {% endif %} />
+        <input type="text" name="phone" id="phone" placeholder="Номер телефона" 
+        required
+        {% if phone is defined %}
+            value="{{ phone }}"
+        {% endif %} />
+
+        <h2>Время брони</h2>
+        <div>
+            <input type="date" name="date" placeholder="Дата"
+            id="dateInput"
+            required
+            {% if date is defined %}
+                value="{{ date }}"
+            {% endif %} />
+
+            <input type="time" name="time"
+            id="timeInput"
+            required readonly 
+            step="1800"
+            pattern="[0-2][0-9]:[0,3]0" 
+            {% if time is defined %}
+                value="{{ time }}"
+            {% endif %} />
+        </div>
+        
+        <h2>Стол</h2>
+        <div>
+            <select id="tableInput" name="table_id" required>
+                <option value="" disabled selected id="tablePlaceholder">Сначала выберите дату</option>
+                {% for tId in tables %}
+                <option value="{{ tId }}" disabled class="tableOption">Столик №{{ tId }}</option>
+                {% endfor %}
+            </select>
+            <datalist id="tables">
+            </datalist>
+            <div style="display: inline;">
+            <input type="range" name="duration"
+            id="durationInput"
+            required disabled
+            min="1" max="4" step="1" value="1" />
+            <a id="durationLabel">полчаса</a>
+            </div>
+        </div>
+
+        <input type="submit" value="забронировать" />
+        <div id="check">
+            <button type="button" id="checkBtn" disabled><code id="checkBtnLbl">
+                Выберите дату и стол</code>
+                <i class="material-icons" id="checkIcon">refresh</i>
+            </button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block rightFloat %}
+    <div id="possibleTime">
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+    let dateInput = document.getElementById("dateInput")
+
+    dateInput.addEventListener("input", () => {
+        document.getElementById("timeInput").removeAttribute('readonly')
+        document.getElementById("durationInput").removeAttribute('readonly')
+
+        document.getElementById("tablePlaceholder").removeAttribute('selected')
+        document.getElementById("tablePlaceholder").text = 'Выберите стол'
+        document.getElementById("tablePlaceholder").setAttribute('selected', true)
+
+        document.querySelectorAll(".tableOption").forEach(e => e.removeAttribute('disabled'))
+
+        document.getElementById("durationInput").removeAttribute('disabled')
+        document.getElementById("checkBtn").removeAttribute('disabled')
+
+        document.getElementById("checkBtnLbl").innerHTML = 'Показать доступное время'
+    })
+
+    let durationInput = document.getElementById("durationInput")
+
+    durationInput.addEventListener("input", () => {
+        document.getElementById("durationLabel").innerHTML = convertDuration(durationInput.value)
+
+        function convertDuration(duration) {
+            map = [
+                "никаких часов тут нет",
+                "полчаса",
+                "час",
+                "полтора часа",
+                "два часа"
+            ]
+
+            return map[duration]
+        }
+    })
+
+    let timeDisplay = document.getElementById("possibleTime")
+    let checkBtn = document.getElementById("checkBtn")
+
+    checkBtn.addEventListener("click", () => {
+        let dateNumber = (dateInput.value).replace(/-/g, "")
+        httpGetAsync("/getTimeJS/" + tableInput.value + "/" + dateNumber, (json) => {
+            possibleTimeArray = []
+            try { possibleTimeArray = JSON.parse(json) } catch (Exception) { }
+            document.getElementById("possibleTime").innerHTML = ''
+            for (let i = 0; i < possibleTimeArray.length; i++) {
+                document.getElementById("possibleTime").innerHTML += "<strong>" + possibleTimeArray[i] + "</strong><br>"
+            }
+        })
+    })
+
+    function httpGetAsync(theUrl, callback) {
+        let xmlHttp = new XMLHttpRequest()
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+
+    </script>
+{% endblock %}

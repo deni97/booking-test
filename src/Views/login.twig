@@ -1,0 +1,18 @@
+{% extends 'managementLayout.twig' %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+    {% if errorMessage is defined %}
+        <strong>{{ errorMessage }}</strong>
+    {% endif %}
+    <form action="/login" method="post">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password">
+        <input type="submit" value="Войти в систему">
+    </form>
+{% endblock %}

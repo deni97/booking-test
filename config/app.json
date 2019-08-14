@@ -1,0 +1,7 @@
+{
+  "db": {
+    "user": "root",
+    "password": ""
+  },
+  "log": "/var/log/reservations.log"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "deni97/reservations",
+    "description": "Test project",
+    "minimum-stability": "stable",
+    "license": "Apache-2.0",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Denis Puzankov",
+            "email": "bax.baxtep@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Reservations\\": "src"
+        }
+    }
+}

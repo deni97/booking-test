@@ -1,0 +1,29 @@
+{% extends 'managementLayout.twig' %}
+
+{% block title %}
+    Расписание
+{% endblock %}
+
+{% block content %}
+<form action="/setSchedule" method="post">
+    <table>
+    <tr>
+        <th>День</th>
+        <th>с</th>
+        <th>по</th>
+    </tr>
+    {% for scheduleDay in schedule %}
+    <tr>
+        <td>{{ scheduleDay.name }}</td>
+        <td><input type="text" name="openAt{{ scheduleDay.id }}"
+            value="{{ scheduleDay.open_at }}" /></td>
+        <td><input type="text" name="duration{{ scheduleDay.id }}"
+            value="{{ scheduleDay.duration + scheduleDay.open_at }}" /></td>
+    </tr>
+    {% endfor %}
+    <tr>
+    </tr>
+</table>
+    <input type="submit" value="сохранить" />
+</form>
+{% endblock %}

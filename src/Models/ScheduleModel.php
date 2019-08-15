@@ -148,7 +148,7 @@ SQL;
 
         foreach ($schedule as $day) {
             $stmt->bindValue('id', $day->getId());
-            $stmt->bindValue('open_at', $day->getOpenAt());
+            $stmt->bindValue('open_at', $day->getOpen_At());
             $stmt->bindValue('duration', $day->getDuration());
             
             if (!$stmt->execute()) {

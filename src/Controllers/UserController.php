@@ -60,7 +60,7 @@ class UserController extends AbstractController
         // Tries to populate an array with reservation possibilities
         // initializes an empty one on caught exception
         try {
-            $array = $reservationModel->getPossibleReservationsForTable($scheduleDay, $date, $tableId);
+            $array = $reservationModel->getPossibleReservations($scheduleDay, $date, $tableId);
         } catch (ScheduleException $e) {
             $array = [];
         }

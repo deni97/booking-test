@@ -77,7 +77,7 @@ class ManagementController extends AbstractController
 
     public function logout(): string
     {
-        setcookie('user', '', time() -10, "/");
+        setcookie('user', '', time() - 1, "/");
 
         return $this->login();
     }

@@ -50,44 +50,12 @@ class ReservationModel extends AbstractModel
         return $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
 
-    public function getByName(string $name): array
-    {
-        $query = 'SELECT * FROM reservations WHERE name = :name ORDER BY date';
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['name' => $name]);
-
-        $reservations = $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
-
-        if (empty($reservations)) {
-            throw new NotFoundException();
-        }
-
-        return $reservations;
-    }
-
     public function getByDate(date $date): array
     {
         $query = 'SELECT * FROM reservations WHERE date = :date';
 
         $stmt = $this->db->prepare($query);
         $stmt->execute(['date' => $date]);
-
-        $reservations = $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
-
-        if (empty($reservations)) {
-            throw new NotFoundException();
-        }
-
-        return $reservations;
-    }
-
-    public function getByTableId(int $table_id): array
-    {
-        $query = 'SELECT * FROM reservations WHERE table_id = :table_id ORDER BY date';
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['table_id' => $table_id]);
 
         $reservations = $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
 
@@ -270,7 +238,6 @@ SQL;
 
         foreach ($reservations as $reservation) {
             $duration = $reservation['duration'];
-            // $time = $reservation['time'] - $scheduleDay->getOpen_At();
             $time = $reservation['time'];
             $index = array_search($time, $possibilities);
 

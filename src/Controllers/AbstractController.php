@@ -11,7 +11,6 @@ abstract class AbstractController
     protected $db;
     protected $config;
     protected $view;
-    protected $log;
     protected $di;
     protected $userEmail;
 
@@ -21,7 +20,6 @@ abstract class AbstractController
         $this->di = $di;
 
         $this->db = $di->get('PDO');
-        $this->log = $di->get('Logger');
         $this->view = $di->get('Twig_Environment');
         $this->config = $di->get('Utils\Config');
     }

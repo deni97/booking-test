@@ -77,6 +77,44 @@ class ReservationModel extends AbstractModel
         return $tables;
     }
 
+    public function getPossibleReservationsForTable($scheduleDay, $date, $table_id): array
+    {
+        $duration = $scheduleDay->getDuration();
+        
+        if ($duration === 0) {
+            throw new ScheduleException("Not working that day.");
+        }
+
+        $query = 'SELECT time, duration FROM reservations WHERE date = :date AND table_id = :table_id ORDER BY time';
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            'date' => $date,
+            'table_id' => $table_id
+        ]);
+
+        $reservations = $stmt->fetchAll();
+
+        $possibilities = [];
+        for ($i = 0; $i < $duration; ++$i) {
+            $possibilities[] = $i + $scheduleDay->getOpen_At();
+        }
+
+        if (empty($reservations)) {
+            return $possibilities;
+        }
+
+        foreach ($reservations as $reservation) {
+            $duration = $reservation['duration'];
+            $time = $reservation['time'];
+            $index = array_search($time, $possibilities);
+
+            array_splice($possibilities, $index, $duration);
+        }
+
+        return $possibilities;
+    }
+    
     public function reserve(Reservation $reservation): int
     {
         $date = $reservation->getDate();
@@ -100,7 +138,6 @@ class ReservationModel extends AbstractModel
             $schedule = $scheduleModel->getOddScheduleDay($date);
             $date = date_format($date, 'Y-m-d');
         } catch (ScheduleException $e) {
-            //  date_format($date, 'Y-m-d H:i:s');
             $date = date_format($date, 'Y-m-d');
             $day = (int) date('N', strtotime($date));
             
@@ -207,78 +244,5 @@ SQL;
         }
 
         return true;
-    }
-
-    public function getPossibleReservationsForTable($scheduleDay, $date, $table_id): array
-    {
-        $duration = $scheduleDay->getDuration();
-        
-        if ($duration === 0) {
-            throw new ScheduleException("Not working that day.");
-        }
-
-        $query = 'SELECT time, duration FROM reservations WHERE date = :date AND table_id = :table_id ORDER BY time';
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            'date' => $date,
-            'table_id' => $table_id
-        ]);
-
-        $reservations = $stmt->fetchAll();
-
-        $possibilities = [];
-        for ($i = 0; $i < $duration; ++$i) {
-            $possibilities[] = $i + $scheduleDay->getOpen_At();
-        }
-
-        if (empty($reservations)) {
-            return $possibilities;
-        }
-
-        foreach ($reservations as $reservation) {
-            $duration = $reservation['duration'];
-            $time = $reservation['time'];
-            $index = array_search($time, $possibilities);
-
-            array_splice($possibilities, $index, $duration);
-        }
-
-        return $possibilities;
-    }
-
-    public function getPossibleReservations($scheduleDay, $date): array
-    {
-        $duration = $scheduleDay->getDuration();
-
-        if ($duration === 0) {
-            throw new ScheduleException("Not working that day.");
-        }
-
-        $query = 'SELECT time, duration FROM reservations WHERE date = :date ORDER BY time';
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['date' => $date]);
-
-        $reservations = $stmt->fetchAll();
-
-        $possibilities = [];
-        for ($i = 0; $i < $duration; ++$i) {
-            $possibilities[] = $i;
-        }
-
-        if (empty($reservations)) {
-            return $possibilities;
-        }
-
-        foreach ($reservations as $reservation) {
-            $duration = $reservation['duration'];
-            $time = $reservation['time'];
-            $index = array_search($time, $possibilities);
-
-            array_splice($possibilities, $index, $duration);
-        }
-
-        return $possibilities;
     }
 }

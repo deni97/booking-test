@@ -2,24 +2,12 @@
 
 namespace Reservations\Domain;
 
-class OddScheduleDay
+class OddScheduleDay extends AbstractScheduleDay
 {
     private $day;
-    private $open_at;
-    private $duration;
 
     public function getDay(): date
     {
         return $this->day;
-    }
-
-    public function getOpen_At(): int
-    {
-        return $this->open_at;
-    }
-
-    public function getDuration(): int
-    {
-        return $this->duration;
     }
 }

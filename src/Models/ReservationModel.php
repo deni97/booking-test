@@ -171,11 +171,6 @@ SQL;
 
         $scheduleModel = new ScheduleModel($this->db);
 
-        $date = $reservation->getDate();
-        $time = $reservation->getTime();
-        $duration = $reservation->getDuration();
-        $table = $reservation->getTable_Id();
-
         try {
             $schedule = $scheduleModel->getOddScheduleDay($date);
             $date = date_format($date, 'Y-m-d');

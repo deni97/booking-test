@@ -25,11 +25,13 @@ class TimeConverter
             throw new TimeConversionException('Time string should be of H:MM or HH:MM format.');
         }
 
-        if (!($key = array_search($time, TimeConverter::$map))) {
+        $index = array_search($time, TimeConverter::$map);
+
+        if ($index === false) {
             throw new TimeConversionException('Time should belong to 0:00-23:30 interval.');
         }
 
-        return $key;
+        return $index;
     }
 
     public static function convertIndexArray($inputArray): array 

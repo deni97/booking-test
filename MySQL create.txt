@@ -51,8 +51,6 @@ INSERT INTO schedule VALUES
   (null, 0, 0);
   
 INSERT INTO tables VALUES 
-  (null, null),
-  (null, null),
   (null, null);
 
 CREATE DATABASE `booking_archive` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;

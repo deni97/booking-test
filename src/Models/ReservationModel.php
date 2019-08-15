@@ -4,13 +4,13 @@ namespace Reservations\Models;
 
 use Reservations\Core\FilteredMap;
 use Reservations\Domain\Reservation;
+use Reservations\Models\ScheduleModel;
 use Reservations\Exceptions\DbException;
 use Reservations\Exceptions\NotFoundException;
 use Reservations\Exceptions\ScheduleException;
 use Reservations\Exceptions\ReservationException;
-use Reservations\Models\ScheduleModel;
-use PDO;
 use DateTime;
+use PDO;
 
 class ReservationModel extends AbstractModel
 {
@@ -77,7 +77,7 @@ class ReservationModel extends AbstractModel
         return $tables;
     }
 
-    public function getPossibleReservations($scheduleDay, $date, $table_id): array
+    public function getPossibleReservations($scheduleDay, string $date, int $table_id): array
     {
         $duration = $scheduleDay->getDuration();
         

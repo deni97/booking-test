@@ -13,7 +13,7 @@ class OddScheduleDay
         return $this->day;
     }
 
-    public function getOpenAt(): int
+    public function getOpen_At(): int
     {
         return $this->open_at;
     }

@@ -77,7 +77,7 @@ class ReservationModel extends AbstractModel
         return $tables;
     }
 
-    public function getPossibleReservationsForTable($scheduleDay, $date, $table_id): array
+    public function getPossibleReservations($scheduleDay, $date, $table_id): array
     {
         $duration = $scheduleDay->getDuration();
         
@@ -151,7 +151,7 @@ class ReservationModel extends AbstractModel
         if (!$this->checkIfPossible(
             $time,
             $duration,
-            $this->getPossibleReservationsForTable($schedule, $date, $table)
+            $this->getPossibleReservations($schedule, $date, $table)
         )) {
             throw new ReservationException();
         }

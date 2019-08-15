@@ -261,7 +261,7 @@ SQL;
 
         $possibilities = [];
         for ($i = 0; $i < $duration; ++$i) {
-            $possibilities[] = $i + $scheduleDay->getOpenAt();
+            $possibilities[] = $i + $scheduleDay->getOpen_At();
         }
 
         if (empty($reservations)) {

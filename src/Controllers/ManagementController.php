@@ -84,17 +84,11 @@ class ManagementController extends AbstractController
 
     public function archive(int $id): string
     {
-        $params = $this->request->getParams();
-
         $reservationModel = new ReservationModel($this->db, $this->di->get('archive'));
 
         $reservationModel->archive($id);
 
-        $reservations = $reservationModel->getAll();
-
-        $params = ['reservations' => $reservations];
-
-        return $this->render('manageReservations.twig', $params);
+        return $this->getReservations();
     }
 
     public function getSchedule(): string

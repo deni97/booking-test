@@ -12,7 +12,7 @@ abstract class AbstractController
     protected $config;
     protected $view;
     protected $di;
-    protected $userEmail;
+    protected $user;
 
     public function __construct(DependencyInjector $di, Request $request) 
     {
@@ -24,9 +24,9 @@ abstract class AbstractController
         $this->config = $di->get('Utils\Config');
     }
 
-    public function setUserEmail(string $email): void
+    public function setUser(string $user): void
     {
-        $this->userEmail = $email;
+        $this->user = $user;
     }
 
     protected function render(string $template, array $params): string 

@@ -50,12 +50,7 @@ class ScheduleDay
     {
         return $this->id;
     }
-
-    public function getOpenAt(): int
-    {
-        return $this->open_at;
-    }
-
+    
     public function getOpen_At(): int
     {
         return $this->open_at;

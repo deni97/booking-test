@@ -67,7 +67,7 @@ class ScheduleDay
         return $this;
     }
 
-    public function setOpenAt(int $open_at): ScheduleDay
+    public function setOpen_At(int $open_at): ScheduleDay
     {
         $this->open_at = $open_at;
         return $this;
@@ -83,7 +83,7 @@ class ScheduleDay
     {
         $scheduleDay = new ScheduleDay();
 
-        $scheduleDay->setId($this->id)->setOpenAt($this->open_at)->setDuration($this->duration);
+        $scheduleDay->setId($this->id)->setOpen_At($this->open_at)->setDuration($this->duration);
 
         return $scheduleDay;
     }

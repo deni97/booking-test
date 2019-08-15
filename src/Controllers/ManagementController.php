@@ -28,7 +28,7 @@ class ManagementController extends AbstractController
         try {
             $reservation = $reservationModel->get($id);
         } catch (NotFoundException $e) {
-            $params = ['errorMessage' => 'Брони с запрашеваемым id не существует.'];
+            $params = ['errorMessage' => 'Брони с запрашиваемым id не существует.'];
             return $this->render('error.twig', $params);
         }
         

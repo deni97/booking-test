@@ -6,7 +6,7 @@
 
 Реализация включает в себя 2 базы данных - текущую (<code>booking</code>) и архив (<code>booking_archive</code>).
 <br>Архив содержит в себе удалённые администратором заявки на бронь. 
-<br>(копии из таблицы <code>booking_archive.reservations</code>)
+<br>(копии из таблицы <code>booking.reservations</code>)
 
 Диаграмма <code>booking</code>:<br>
 ![DB Diagram](https://i.imgur.com/tkJ0WFu.png)

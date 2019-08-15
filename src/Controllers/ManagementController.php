@@ -129,40 +129,12 @@ class ManagementController extends AbstractController
 
         $scheduleDay = new ScheduleDay();
 
-        $openAt = $params->getInt('openAt1');
-        $duration = $params->getInt('duration1') - $openAt;
-        $scheduleDay->setId(1)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt2');
-        $duration = $params->getInt('duration2') - $openAt;
-        $scheduleDay->setId(2)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt3');
-        $duration = $params->getInt('duration3') - $openAt;
-        $scheduleDay->setId(3)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt4');
-        $duration = $params->getInt('duration4') - $openAt;
-        $scheduleDay->setId(4)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt5');
-        $duration = $params->getInt('duration5') - $openAt;
-        $scheduleDay->setId(5)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt6');
-        $duration = $params->getInt('duration6') - $openAt;
-        $scheduleDay->setId(6)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt7');
-        $duration = $params->getInt('duration7') - $openAt;
-        $scheduleDay->setId(7)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
+        for ($i = 1; $i < 8; ++$i) { 
+            $openAt = $params->getInt('openAt' . $i);
+            $duration = $params->getInt('duration' . $i) - $openAt;
+            $scheduleDay->setId($i)->setOpen_At($openAt)->setDuration($duration);
+            $schedule[] = $scheduleDay->getCopy();
+        }
 
         return $schedule;
     }

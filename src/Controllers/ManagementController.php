@@ -7,6 +7,7 @@ use Reservations\Models\ReservationModel;
 use Reservations\Models\ScheduleModel;
 use Reservations\Models\LoginModel;
 use Reservations\Domain\ScheduleDay;
+use Reservations\Core\FilteredMap;
 
 class ManagementController extends AbstractController
 {
@@ -128,7 +129,7 @@ class ManagementController extends AbstractController
         return $this->getSchedule();
     }
 
-    private function constructScheduleFromParams($params): array
+    private function constructScheduleFromParams(FilteredMap $params): array
     {
         $schedule = [];
 

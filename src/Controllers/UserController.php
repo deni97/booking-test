@@ -26,7 +26,7 @@ class UserController extends AbstractController
         return $this->render('reservation.twig', $params);
     }
 
-    public function getTimeJS(int $tableId, string $date)
+    public function getTimeJS(int $tableId, string $date): string
     {
         $year = substr($date, 0, 4);
         $month = substr($date, 4, 2);

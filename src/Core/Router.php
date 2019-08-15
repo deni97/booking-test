@@ -62,8 +62,8 @@ class Router
 
         if (isset($info['login']) && $info['login']) {
             if ($request->getCookies()->has('user')) {
-                $userEmail = $request->getCookies()->get('user');
-                $controller->setUserEmail($userEmail);
+                $user = $request->getCookies()->get('user');
+                $controller->setUser($user);
             } else {
                 $managementController = new ManagementController($this->di, $request);
                 return $managementController->login();

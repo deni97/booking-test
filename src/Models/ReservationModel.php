@@ -114,6 +114,48 @@ class ReservationModel extends AbstractModel
 
         return $possibilities;
     }
+
+    public function archive(int $id): void
+    {
+        $reservation = $this->get($id);
+
+        $this->db->beginTransaction();
+
+        $query = 'DELETE FROM reservations WHERE id = :id';
+
+        $stmt = $this->db->prepare($query);
+
+        if (!$stmt->execute(['id' => $id])) {
+            $this->db->rollBack();
+            throw new DbException($stmt->errorInfo()[2]);
+        }
+
+        $query = <<<SQL
+INSERT INTO reservations
+(id, name, phone, table_id, date, time, duration)
+VALUES
+(:id, :name, :phone, :table_id, :date, :time, :duration)
+SQL;
+
+        $stmt = $this->archiveDb->prepare($query);
+
+        $params = [
+            'id' => $reservation->getId(),
+            'name' => $reservation->getName(),
+            'phone' => $reservation->getPhone(),
+            'table_id' => $reservation->getTableId(),
+            'date' => $reservation->getDate(),
+            'time' => $reservation->getTime(),
+            'duration' => $reservation->getDuration()
+        ];
+
+        if (!$stmt->execute($params)) {
+            $this->db->rollBack();
+            throw new DbException($stmt->errorInfo()[2]);
+        }
+
+        $this->db->commit();
+    }
     
     public function reserve(Reservation $reservation): int
     {
@@ -185,48 +227,6 @@ SQL;
         $this->db->commit();
 
         return $id;
-    }
-
-    public function archive(int $id): void
-    {
-        $reservation = $this->get($id);
-
-        $this->db->beginTransaction();
-
-        $query = 'DELETE FROM reservations WHERE id = :id';
-
-        $stmt = $this->db->prepare($query);
-
-        if (!$stmt->execute(['id' => $id])) {
-            $this->db->rollBack();
-            throw new DbException($stmt->errorInfo()[2]);
-        }
-
-        $query = <<<SQL
-INSERT INTO reservations
-(id, name, phone, table_id, date, time, duration)
-VALUES
-(:id, :name, :phone, :table_id, :date, :time, :duration)
-SQL;
-
-        $stmt = $this->archiveDb->prepare($query);
-
-        $params = [
-            'id' => $reservation->getId(),
-            'name' => $reservation->getName(),
-            'phone' => $reservation->getPhone(),
-            'table_id' => $reservation->getTableId(),
-            'date' => $reservation->getDate(),
-            'time' => $reservation->getTime(),
-            'duration' => $reservation->getDuration()
-        ];
-
-        if (!$stmt->execute($params)) {
-            $this->db->rollBack();
-            throw new DbException($stmt->errorInfo()[2]);
-        }
-
-        $this->db->commit();
     }
 
     private function checkIfPossible($time, $duration, $possibilities): bool

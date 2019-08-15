@@ -192,43 +192,15 @@ class ManagementController extends AbstractController
         // into the returned array
         $scheduleDay = new ScheduleDay();
 
-        $openAt = $params->getInt('openAt1');
-        // Converts time input from [openAt; closedAt] to [openAt; duration]
-        $duration = $params->getInt('duration1') - $openAt;
-        // Sets fields of ScheduleDay
-        $scheduleDay->setId(1)->setOpen_At($openAt)->setDuration($duration);
-        // Gets a copy and pushes it in the array
-        $schedule[] = $scheduleDay->getCopy();
-        // Repeats for each day of the week
-        $openAt = $params->getInt('openAt2');
-        $duration = $params->getInt('duration2') - $openAt;
-        $scheduleDay->setId(2)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt3');
-        $duration = $params->getInt('duration3') - $openAt;
-        $scheduleDay->setId(3)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt4');
-        $duration = $params->getInt('duration4') - $openAt;
-        $scheduleDay->setId(4)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt5');
-        $duration = $params->getInt('duration5') - $openAt;
-        $scheduleDay->setId(5)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt6');
-        $duration = $params->getInt('duration6') - $openAt;
-        $scheduleDay->setId(6)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
-
-        $openAt = $params->getInt('openAt7');
-        $duration = $params->getInt('duration7') - $openAt;
-        $scheduleDay->setId(7)->setOpen_At($openAt)->setDuration($duration);
-        $schedule[] = $scheduleDay->getCopy();
+        for ($i = 1; $i < 8; ++$i) { 
+            $openAt = $params->getInt('openAt' . $i);
+            // Converts time input from [openAt; closedAt] to [openAt; duration]
+            $duration = $params->getInt('duration' . $i) - $openAt;
+            // Sets fields of ScheduleDay
+            $scheduleDay->setId($i)->setOpen_At($openAt)->setDuration($duration);
+            // Gets a copy and pushes it in the array
+            $schedule[] = $scheduleDay->getCopy();
+        }
 
         return $schedule;
     }

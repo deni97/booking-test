@@ -65,8 +65,7 @@ class UserController extends AbstractController
         $this->setViewParamsErrorMessage($reservation, $viewParams);
         $this->setViewParamsFormValues($reservation, $viewParams);
 
-        $tables = $reservationModel->getTables();   
-        $viewParams['tables'] = $tables;
+        $viewParams['tables'] = $reservationModel->getTables();
 
         if (isset($viewParams['errorMessage'])) {
             return $this->render('reservation.twig', $viewParams);

@@ -4,11 +4,9 @@ namespace Reservations\Domain;
 
 use Reservations\Core\FilteredMap;
 
-class ScheduleDay
+class ScheduleDay extends AbstractScheduleDay
 {
     private $id;
-    private $open_at;
-    private $duration;
     private $name;
 
     public function setName(): void
@@ -49,16 +47,6 @@ class ScheduleDay
     public function getId(): int
     {
         return $this->id;
-    }
-    
-    public function getOpen_At(): int
-    {
-        return $this->open_at;
-    }
-
-    public function getDuration(): int
-    {
-        return $this->duration;
     }
 
     public function setId(int $id): ScheduleDay

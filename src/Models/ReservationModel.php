@@ -162,7 +162,7 @@ SQL;
         $date = $reservation->getDate();
 
         if ($date->getTimestamp() < time()) {
-            throw new ReservationException('Пост фактум за стол не садим!');
+            throw new ReservationException('Постфактум за стол не садим!');
         }
 
         $time = $reservation->getTime();
@@ -229,7 +229,7 @@ SQL;
         return $id;
     }
 
-    private function checkIfPossible($time, $duration, $possibilities): bool
+    private function checkIfPossible(int $time, int $duration, array $possibilities): bool
     {
         $checkedInterval = [];
 

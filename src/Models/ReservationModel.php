@@ -15,8 +15,14 @@ use PDO;
 
 class ReservationModel extends AbstractModel
 {
+    /**
+     * Reservation data type used in fetching from the DB.
+     */
     const CLASSNAME = '\Reservations\Domain\Reservation';
 
+    /**
+     * PDO that is used for communication with the archive DB.
+     */
     private $archiveDb;
 
     public function __construct(PDO $db, PDO $archiveDb)
@@ -25,6 +31,13 @@ class ReservationModel extends AbstractModel
         parent::__construct($db);
     }
 
+    /**
+     * A function that fetches a single reservation from the DB.
+     * 
+     * @param integer $id reservation id
+     * 
+     * @return Reservation a Reservation object
+     */
     public function get(int $id): Reservation
     {
         $query = 'SELECT * FROM reservations WHERE id = :id ORDER BY date';
@@ -42,15 +55,28 @@ class ReservationModel extends AbstractModel
         return $reservation;
     }
 
+    /**
+     * A function that fetches all reservations from the DB.
+     * 
+     * @return array an array of Reservation objects
+     */
     public function getAll(): array
     {
         $query = 'SELECT * FROM reservations';
+
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
 
+    /**
+     * A function that fetches all reservations on the specified day.
+     * 
+     * @param date $date
+     * 
+     * @return array an array of Reservation objects
+     */
     public function getByDate(date $date): array
     {
         $query = 'SELECT * FROM reservations WHERE date = :date';
@@ -67,25 +93,16 @@ class ReservationModel extends AbstractModel
         return $reservations;
     }
 
-    public function getTables(): array
+    /**
+     * A function that fetches all reservations on the specified day and table.
+     * 
+     * @param string $date MySQL-compatible date string
+     * @param integer $table_id
+     * 
+     * @return array an array of Reservation objects
+     */
+    public function getByDateAndTable(string $date, int $table_id): array
     {
-        $query = 'SELECT id FROM tables';
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-
-        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-
-        return $tables;
-    }
-
-    public function getPossibleReservations(AbstractScheduleDay $scheduleDay, string $date, int $table_id): array
-    {
-        $duration = $scheduleDay->getDuration();
-        
-        if ($duration === 0) {
-            throw new ScheduleException("Not working that day.");
-        }
-
         $query = 'SELECT time, duration FROM reservations WHERE date = :date AND table_id = :table_id ORDER BY time';
 
         $stmt = $this->db->prepare($query);
@@ -96,28 +113,79 @@ class ReservationModel extends AbstractModel
 
         $reservations = $stmt->fetchAll();
 
-        $possibilities = [];
-        for ($i = 0; $i < $duration; ++$i) {
-            $possibilities[] = $i + $scheduleDay->getOpen_At();
+        return $reservations;
+    }
+
+    /**
+     * A function that fetches all table ids from the DB.
+     * 
+     * @return array a set of integers representing table ids
+     */
+    public function getTables(): array
+    {
+        $query = 'SELECT id FROM tables';
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+        return $tables;
+    }
+
+    /**
+     * A function that calculates all possible times for a reservation
+     * <br>on the specified day and table.
+     * 
+     * @param string $date MySQL-compatible date string
+     * @param int $table_id 
+     * 
+     * @return array a set of possible reservation times
+     */
+    public function getPossibleReservations(string $date, int $table_id): array
+    {
+        $scheduleModel = new ScheduleModel($this->db);
+        $scheduleDay = $scheduleModel->getByDate($date);
+        $duration = $scheduleDay->getDuration();
+        $openAt = $scheduleDay->getOpen_At();
+
+        // Not working that day
+        if ($duration === 0) {
+            throw new ScheduleException();
         }
 
+        $possibilities = [];
+        for ($i = 0; $i < $duration; ++$i) {
+            $possibilities[] = $i + $openAt;
+        }
+
+        $reservations = $this->getByDateAndTable($date, $table_id);
+        // No reservations for that date and table - anything is possible
         if (empty($reservations)) {
             return $possibilities;
         }
-
+        // Cuts out reserved time out of possibilities
         foreach ($reservations as $reservation) {
-            $duration = $reservation['duration'];
-            $time = $reservation['time'];
-            $index = array_search($time, $possibilities);
-
-            array_splice($possibilities, $index, $duration);
+            $index = array_search($reservation['time'], $possibilities);
+            array_splice($possibilities, $index, $reservation['duration']);
         }
 
         return $possibilities;
     }
 
+    /**
+     * A function that tries to archive a reservation.
+     * 
+     * This method uses transaction on the current DB to ensure archiving. 
+     * <br>Also it uses a single $stmt variable for both current DB and archive DB.
+     * 
+     * @param integer $id an id of the reservation
+     * 
+     * @return void
+     */
     public function archive(int $id): void
     {
+        // Gets reservation by id
         $reservation = $this->get($id);
 
         $this->db->beginTransaction();
@@ -125,7 +193,7 @@ class ReservationModel extends AbstractModel
         $query = 'DELETE FROM reservations WHERE id = :id';
 
         $stmt = $this->db->prepare($query);
-
+        // Deny transaction if delete fails
         if (!$stmt->execute(['id' => $id])) {
             $this->db->rollBack();
             throw new DbException($stmt->errorInfo()[2]);
@@ -141,15 +209,16 @@ SQL;
         $stmt = $this->archiveDb->prepare($query);
 
         $params = [
-            'id' => $reservation->getId(),
-            'name' => $reservation->getName(),
-            'phone' => $reservation->getPhone(),
+            'id'       => $reservation->getId(),
+            'name'     => $reservation->getName(),
+            'phone'    => $reservation->getPhone(),
             'table_id' => $reservation->getTableId(),
-            'date' => $reservation->getDate(),
-            'time' => $reservation->getTime(),
+            'date'     => $reservation->getDate(),
+            'time'     => $reservation->getTime(),
             'duration' => $reservation->getDuration()
         ];
 
+        // Rolls back changes to the current DB if archiving fails
         if (!$stmt->execute($params)) {
             $this->db->rollBack();
             throw new DbException($stmt->errorInfo()[2]);
@@ -157,43 +226,19 @@ SQL;
 
         $this->db->commit();
     }
-    
+
+    /**
+     * A function that tries to make a reservation.
+     * 
+     * @param Reservation $reservation 
+     * 
+     * @return integer last inserted reservation id
+     */
     public function reserve(Reservation $reservation): int
     {
-        $date = $reservation->getDate();
-
-        if ($date->getTimestamp() < time()) {
-            throw new ReservationException('Постфактум за стол не садим!');
-        }
-
-        $time = $reservation->getTime();
-        $duration = $reservation->getDuration();
-        $table = $reservation->getTable_Id();
-
-        $scheduleModel = new ScheduleModel($this->db);
-
-        try {
-            $schedule = $scheduleModel->getOddScheduleDay($date);
-            $date = date_format($date, 'Y-m-d');
-        } catch (ScheduleException $e) {
-            $date = date_format($date, 'Y-m-d');
-            $day = (int) date('N', strtotime($date));
-            
-            $schedule = $scheduleModel->getDay($day);
-        }
-        
-        if (($time + $duration) > $schedule->getDuration() + $schedule->getOpen_At() + 1) {
-            throw new ReservationException('Так долго не работаем!');
-        }
-
-        if (!$this->checkIfPossible(
-            $time,
-            $duration,
-            $this->getPossibleReservations($schedule, $date, $table)
-        )) {
+        if (!$this->isPossible($reservation)) {
             throw new ReservationException();
         }
-        $this->db->beginTransaction();
 
         $query = <<<SQL
 INSERT INTO reservations
@@ -205,36 +250,65 @@ SQL;
         $stmt = $this->db->prepare($query);
 
         $params = [
-            'name' => $reservation->getName(),
-            'phone' => $reservation->getPhone(),
+            'name'     => $reservation->getName(),
+            'phone'    => $reservation->getPhone(),
             'table_id' => $reservation->getTableId(),
-            'date' => date_format($reservation->getDate(), 'Y-m-d H:i:s'),
-            'time' => $reservation->getTime(),
+            'date'     => date_format($reservation->getDate(), 'Y-m-d H:i:s'),
+            'time'     => $reservation->getTime(),
             'duration' => $reservation->getDuration()
         ];
 
         if (!$stmt->execute($params)) {
-            $this->db->rollBack();
             throw new DbException($stmt->errorInfo()[2]);
         }
 
-        $id = $this->db->lastInsertId();
-
-        $this->db->commit();
-
-        return $id;
+        return $this->db->lastInsertId();
     }
 
-    private function checkIfPossible(int $time, int $duration, array $possibilities): bool
+    /**
+     * A helper method for reserve() that checks the possibility of 
+     * <br>the specified reservation.
+     * 
+     * @param Reservation $reservation checked reservation
+     * 
+     * @return bool the possibility of this reservation
+     */
+    private function isPossible(Reservation $reservation): bool
     {
-        $checkedInterval = [];
-
+        $date     = $reservation->getDate();
+        $time     = $reservation->getTime();
+        $table    = $reservation->getTable_Id();
+        $duration = $reservation->getDuration();
+        // Deny post-factum reservations
+        if ($date->getTimestamp() < time()) {
+            return false;
+        }
+        // Represents reservation time as a set of integers
+        $reservationInterval = [];
         for ($i = $time; $i < $time + $duration; ++$i) {
-            $checkedInterval[] = $i;
+            $reservationInterval[] = $i;
         }
 
-        foreach ($checkedInterval as $value) {
-            if (array_search($value, $possibilities) === false) {
+        $date = date_format($date, 'Y-m-d');
+        $possibilities = $this->getPossibleReservations($date, $table);
+        // If reservation time is contained inside the possibilities set 
+        // then the reservation is possible
+        return $this->isSubset($reservationInterval, $possibilities);
+    }
+
+    /**
+     * A helper method that checks whether the supposed subset
+     * <br> is infact contained inside the supposed superset.
+     * 
+     * @param array $subset
+     * @param array $superset
+     * 
+     * @return bool truth check result
+     */
+    private function isSubset(array $subset, array $superset): bool
+    {
+        foreach ($subset as $value) {
+            if (array_search($value, $superset) === false) {
                 return false;
             }
         }

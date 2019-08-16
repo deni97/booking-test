@@ -16,7 +16,7 @@ use PDO;
 class ReservationModel extends AbstractModel
 {
     /**
-     * Reservation data type used in fetching from the DB.
+     * Reservation data type used for fetching from the DB.
      */
     const CLASSNAME = '\Reservations\Domain\Reservation';
 

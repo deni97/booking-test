@@ -21,7 +21,10 @@ class ManagementController extends AbstractController
         $reservationModel = new ReservationModel($this->db, $this->di->get('archive'));
         // Gets all reservations from the DB
         $reservations = $reservationModel->getAll();
-        $params = ['reservations' => $reservations];
+        $params = [
+            'reservations' => $reservations,
+            'loggedIn' => true
+            ];
 
         return $this->render('manageReservations.twig', $params);
     }
@@ -44,7 +47,10 @@ class ManagementController extends AbstractController
             return $this->render('error.twig', $params);
         }
         
-        $params = ['reservation' => $reservation];
+        $params = [
+            'reservation' => $reservation,
+            'loggedIn' => true
+            ];
 
         return $this->render('manageSingleReservation.twig', $params);
     }
@@ -146,7 +152,10 @@ class ManagementController extends AbstractController
             $scheduleDay->setName();
         }
 
-        $params = ['schedule' => $schedule];
+        $params = [
+            'schedule' => $schedule,
+            'loggedIn' => true
+            ];
 
         return $this->render('manageSchedule.twig', $params);
     }

@@ -6,28 +6,49 @@ use Reservations\Exceptions\ScheduleException;
 use Reservations\Exceptions\DbException;
 use Reservations\Domain\ScheduleDay;
 use Reservations\Domain\OddScheduleDay;
+use Reservations\Domain\AbstractScheduleDay;
 use DateTime;
 use PDO;
 
 class ScheduleModel extends AbstractModel
 {
+    /**
+     * A classname used for fetching ScheduleDays.
+     */
     const CLASSNAME = '\Reservations\Domain\ScheduleDay';
+
+    /**
+     * A classname vfor fetching OddScheduleDays.
+     */
     const CLASSNAME_ODD = '\Reservations\Domain\OddScheduleDay';
 
-    public function getByDate(string $date)
+    /**
+     * A function that tries to get an OddScheduleDay for a specified date,
+     * <br>goes for a regular one on fail. 
+     * 
+     * @param string $date MySQL-compatible date string
+     * 
+     * @return AbstractScheduleDay 
+     */
+    public function getByDate(string $date): AbstractScheduleDay
     {
-        $schedule = null;
-
         try {
-            $schedule = $this->getOddScheduleDay($date);
+            $scheduleDay = $this->getOddScheduleDay($date);
         } catch (ScheduleException $e) {
             $day = (int) date('N', strtotime($date));
-            $schedule = $this->getDay($day);
+            $scheduleDay = $this->getDay($day);
         }
 
-        return $schedule;
+        return $scheduleDay;
     }
 
+    /**
+     * A function that tries to fetch schedule for a specified day of the week.
+     * 
+     * @param integer $day number representation of a day of the week
+     * 
+     * @return ScheduleDay
+     */
     public function getDay(int $day): ScheduleDay
     {
         if ($day < 1 || $day > 7) {
@@ -41,7 +62,7 @@ class ScheduleModel extends AbstractModel
 
         $stmt->setFetchMode(PDO::FETCH_CLASS, self::CLASSNAME);
         $schedule = $stmt->fetch();
-
+        
         if (empty($schedule)) {
             throw new ScheduleException();
         }
@@ -49,6 +70,11 @@ class ScheduleModel extends AbstractModel
         return $schedule;
     }
 
+    /**
+     * A function that tries too fetch all ScheduleDays for a week.
+     * 
+     * @return array a set of ScheduleDays representing a week
+     */
     public function getWeek(): array
     {
         $query = 'SELECT * FROM schedule';
@@ -57,7 +83,8 @@ class ScheduleModel extends AbstractModel
         $stmt->execute();
 
         $schedule = $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
-
+        // Throws an exception in case it didn't fetch a thing
+        // or if an array doesn't represent a week
         if (empty($schedule) || (count($schedule) !== 7)) {
             throw new ScheduleException();
         }
@@ -65,6 +92,13 @@ class ScheduleModel extends AbstractModel
         return $schedule;
     }
 
+    /**
+     * A function that tries to fetch an OddScheduleDay on the specified date.
+     * 
+     * @param string $date MySQL-compatible date string
+     * 
+     * @return OddScheduleDay
+     */
     public function getOddScheduleDay(string $date): OddScheduleDay
     {
         $query = 'SELECT * FROM odd_schedule WHERE day = DATE(:day)';
@@ -73,21 +107,29 @@ class ScheduleModel extends AbstractModel
         $stmt->execute(['day' => $date]);
 
         $stmt->setFetchMode(PDO::FETCH_CLASS, self::CLASSNAME_ODD);
-        $schedule = $stmt->fetch();
+        $scheduleDay = $stmt->fetch();
 
-        if (empty($schedule)) {
+        if (empty($scheduleDay)) {
             throw new ScheduleException('No odds that day!');
         }
 
-        return $schedule;
+        return $scheduleDay;
     }
 
-    public function getOddScheduleAfter($day): array
+    /**
+     * A function that tries to fetch all OddScheduleDays after a specified date.
+     * <br>Currently it's of no use.
+     * 
+     * @param string $date MySQL-compatible date string
+     * 
+     * @return array an array populated with OddScheduleDays
+     */
+    public function getOddScheduleAfter(string $date): array
     {
         $query = 'SELECT * FROM odd_schedule WHERE day > :day';
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['day' => $day]);
+        $stmt->execute(['day' => $date]);
 
         $schedule = $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME_ODD);
 
@@ -98,13 +140,23 @@ class ScheduleModel extends AbstractModel
         return $schedule;
     }
 
-    public function scheduleOddDay($day, int $time, int $duration): void
+    /**
+     * A function that tries to schedule an odd day.
+     * 
+     * @param string $date MySQL-compatible date string
+     * @param integer $time an int representation of time
+     * @param integer $duration int representation of duration
+     * 
+     * @return void
+     */
+    public function scheduleOddDay(string $date, int $time, int $duration): void
     {
+        // Checks if the caller tries to schedule anything but today
         if ($time < 0 || $time > 47) {
             throw new ScheduleException('Time represented as int should belong to [0, 47] interval.');
         }
-
-        if ($day == date("Y-m-d")) {
+        // Checks if the caller tries to schedule today
+        if ($date == date("Y-m-d")) {
             throw new ScheduleException("Can\'t schedule today.");
         }
 
@@ -113,7 +165,7 @@ class ScheduleModel extends AbstractModel
         $stmt = $this->db->prepare($query);
         
         $params = [
-            'day' => $day,
+            'day' => $date,
             'time' => $time,
             'duration' => $duration
         ];
@@ -123,12 +175,20 @@ class ScheduleModel extends AbstractModel
         }
     }
 
+    /**
+     * A function that tries to update a week's schedule in the DB.
+     * 
+     * @param array $schedule a set of ScheduleDays representing a week
+     * 
+     * @return void
+     */
     public function updateSchedule(array $schedule): void
     {
+        // Checks if $schedule array does not represent a week
         if (count($schedule) !== 7) {
-            throw new ScheduleException('Array contains more or less that 7 elements.');
+            throw new ScheduleException('Array should contain exactly 7 elements, representing a week.');
         }
-
+        // Checks if $schedule array contains anything but ScheduleDays
         foreach ($schedule as $day) {
             if (!($day instanceof ScheduleDay)) {
                 throw new ScheduleException('Schedule array should consist of ScheduleDay objects');
@@ -144,13 +204,15 @@ WHERE id = :id
 SQL;
 
         $stmt = $this->db->prepare($query);
-
+        // Roll back whatever goes wrong
         foreach ($schedule as $day) {
-            $stmt->bindValue('id', $day->getId());
-            $stmt->bindValue('open_at', $day->getOpen_At());
-            $stmt->bindValue('duration', $day->getDuration());
+            $params = [
+                'id'       => $day->getId(),
+                'open_at'  => $day->getOpen_At(),
+                'duration' => $day->getDuration()
+            ];
             
-            if (!$stmt->execute()) {
+            if (!$stmt->execute($params)) {
                 $this->db->rollBack();
                 throw new DbException($stmt->errorInfo()[2]);
             }

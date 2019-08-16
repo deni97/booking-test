@@ -19,9 +19,8 @@ class ScheduleModel extends AbstractModel
         $schedule = null;
 
         try {
-            $schedule = $this->getOddScheduleDay(new DateTime($date));
+            $schedule = $this->getOddScheduleDay($date);
         } catch (ScheduleException $e) {
-            $date = $date . ' 00:00:00';
             $day = (int) date('N', strtotime($date));
             $schedule = $this->getDay($day);
         }
@@ -66,12 +65,12 @@ class ScheduleModel extends AbstractModel
         return $schedule;
     }
 
-    public function getOddScheduleDay($day): OddScheduleDay
+    public function getOddScheduleDay(string $date): OddScheduleDay
     {
         $query = 'SELECT * FROM odd_schedule WHERE day = DATE(:day)';
         
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['day' => $day->format('Y-m-d H:i:s')]);
+        $stmt->execute(['day' => $date]);
 
         $stmt->setFetchMode(PDO::FETCH_CLASS, self::CLASSNAME_ODD);
         $schedule = $stmt->fetch();

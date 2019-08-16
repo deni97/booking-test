@@ -51,16 +51,12 @@ class UserController extends AbstractController
         $day = substr($date, 6, 2);
         $date = $year . '-' . $month . '-' . $day;
 
-        $scheduleModel = new ScheduleModel($this->db);
-        // Constructs schedule day from a date string
-        $scheduleDay = $scheduleModel->getByDate($date);
-
         $reservationModel = new ReservationModel($this->db, $this->di->get('archive'));
         
         // Tries to populate an array with reservation possibilities
         // initializes an empty one on caught exception
         try {
-            $array = $reservationModel->getPossibleReservations($scheduleDay, $date, $tableId);
+            $array = $reservationModel->getPossibleReservations($date, $tableId);
         } catch (ScheduleException $e) {
             $array = [];
         }

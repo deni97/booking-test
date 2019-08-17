@@ -293,24 +293,8 @@ SQL;
         $possibilities = $this->getPossibleReservations($date, $table);
         // If reservation time is contained inside the possibilities set 
         // then the reservation is possible
-        return $this->isSubset($reservationInterval, $possibilities);
-    }
-
-    /**
-     * A helper method that checks whether the supposed subset
-     * <br> is infact contained inside the supposed superset.
-     * 
-     * @param array $subset
-     * @param array $superset
-     * 
-     * @return bool truth check result
-     */
-    private function isSubset(array $subset, array $superset): bool
-    {
-        foreach ($subset as $value) {
-            if (array_search($value, $superset) === false) {
-                return false;
-            }
+        if (array_diff($reservationInterval, $possibilities)) {
+            return false;
         }
 
         return true;

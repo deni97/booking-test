@@ -165,7 +165,7 @@
         let dateNumber = (dateInput.value).replace(/-/g, "")
         httpGetAsync("/getTimeJS/" + tableInput.value + "/" + dateNumber, (json) => {
             possibleTimeArray = []
-            try { possibleTimeArray = JSON.parse(json) } catch (Exception) { }
+            try { possibleTimeArray = JSON.parse(json) } catch (e) { console.log(e) }
             document.getElementById("possibleTime").innerHTML = ''
             for (let i = 0; i < possibleTimeArray.length; i++) {
                 document.getElementById("possibleTime").innerHTML += "<strong>" + possibleTimeArray[i] + "</strong><br>"

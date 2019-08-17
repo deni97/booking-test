@@ -9,6 +9,43 @@ class ScheduleDay extends AbstractScheduleDay
     private $id;
     private $name;
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getCopy(): ScheduleDay
+    {
+        $scheduleDay = new ScheduleDay();
+
+        $scheduleDay->setId($this->id)->setOpen_At($this->open_at)->setDuration($this->duration);
+
+        return $scheduleDay;
+    }
+
+    public function setId(int $id): ScheduleDay
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function setOpen_At(int $open_at): ScheduleDay
+    {
+        $this->open_at = $open_at;
+        return $this;
+    }
+
+    public function setDuration(int $duration): ScheduleDay
+    {
+        $this->duration = $duration;
+        return $this;
+    }
+    
     public function setName(): void
     {
         switch ($this->id) {
@@ -37,42 +74,5 @@ class ScheduleDay extends AbstractScheduleDay
                 $this->name = 'UNDEFINED';
                 break;
         }
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): ScheduleDay
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    public function setOpen_At(int $open_at): ScheduleDay
-    {
-        $this->open_at = $open_at;
-        return $this;
-    }
-
-    public function setDuration(int $duration): ScheduleDay
-    {
-        $this->duration = $duration;
-        return $this;
-    }
-
-    public function getCopy(): ScheduleDay
-    {
-        $scheduleDay = new ScheduleDay();
-
-        $scheduleDay->setId($this->id)->setOpen_At($this->open_at)->setDuration($this->duration);
-
-        return $scheduleDay;
     }
 }

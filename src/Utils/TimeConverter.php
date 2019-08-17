@@ -21,14 +21,14 @@ class TimeConverter
 
     public static function getIndex(string $time): int
     {
-        if (!preg_match("@\d{1,2}:\d{2}@AD", $time)) {
-            throw new TimeConversionException('Time string should be of H:MM or HH:MM format.');
+        if (!preg_match("@\d{2}:\d{2}@AD", $time)) {
+            throw new TimeConversionException('Time string should be of HH:MM format.');
         }
 
         $index = array_search($time, TimeConverter::$map);
 
         if ($index === false) {
-            throw new TimeConversionException('Time should belong to 0:00-23:30 interval.');
+            throw new TimeConversionException('Time should belong to 00:00-23:30 interval.');
         }
 
         return $index;

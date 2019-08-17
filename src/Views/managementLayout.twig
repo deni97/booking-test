@@ -9,7 +9,11 @@
         <a href="/schedule">Расписание</a>
         <a href="/register">Регистрация</a>
         Е Д А
+        {% if loggedIn is empty %}
+        <a href="/login" style="float: right;">Войти в систему</a>
+        {% else %}
         <a href="/logout" style="float: right;">Выйти из системы</a>
+        {% endif %}
         <hr>
     </div>
     {% block content %}{% endblock %}

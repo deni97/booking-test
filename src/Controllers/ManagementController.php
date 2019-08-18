@@ -208,7 +208,7 @@ class ManagementController extends AbstractController
             // Sets fields of ScheduleDay
             $scheduleDay->setId($i)->setOpen_At($openAt)->setDuration($duration);
             // Gets a copy and pushes it in the array
-            $schedule[] = $scheduleDay->getCopy();
+            $schedule[] = clone $scheduleDay;
         }
 
         return $schedule;

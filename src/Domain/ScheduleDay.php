@@ -19,15 +19,6 @@ class ScheduleDay extends AbstractScheduleDay
         return $this->id;
     }
 
-    public function getCopy(): ScheduleDay
-    {
-        $scheduleDay = new ScheduleDay();
-
-        $scheduleDay->setId($this->id)->setOpen_At($this->open_at)->setDuration($this->duration);
-
-        return $scheduleDay;
-    }
-
     public function setId(int $id): ScheduleDay
     {
         $this->id = $id;

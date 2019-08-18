@@ -192,7 +192,28 @@ class ScheduleModel extends AbstractModel
             'open_at' => $openAt,
             'duration' => $duration
         ];
-        var_dump($params);
+
+        if (!$stmt->execute($params)) {
+            throw new DbException($stmt->errorInfo()[2]);
+        }
+    }
+
+    /**
+     * A function that tries to remove a day from the odd schedule.
+     * 
+     * @param string $date MySQL-compatible date string
+     * 
+     * @return void
+     */
+    public function deleteOddScheduleDay(string $date): void
+    {
+        $query = 'DELETE FROM odd_schedule WHERE day = :day';
+
+        $stmt = $this->db->prepare($query);
+        
+        $params = [
+            'day' => $date,
+        ];
 
         if (!$stmt->execute($params)) {
             throw new DbException($stmt->errorInfo()[2]);

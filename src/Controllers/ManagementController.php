@@ -211,6 +211,28 @@ class ManagementController extends AbstractController
     }
 
     /**
+     * A function that tries to delete a day from the odd schedule.
+     * 
+     * @return string rendered odd schedule by getOddSchedule()
+     */
+    public function deleteOddScheduleDay(string $date): string
+    {
+        # I couldn't get the string request parameter to work
+        # so I had to use an int representation
+        # TO-DO: rewrite this hack
+        $year = substr($date, 0, 4);
+        $month = substr($date, 4, 2);
+        $day = substr($date, 6, 2);
+        $date = $year . '-' . $month . '-' . $day;
+        
+        $scheduleModel = new ScheduleModel($this->db);
+        # TO-DO: exception handling
+        $scheduleModel->deleteOddScheduleDay($date);
+        // Renders the odd schedule page
+        return $this->getOddSchedule();
+    }
+
+    /**
      * A function that tries to update the schedule.
      * 
      * @return string rendered schedule by getSchedule()

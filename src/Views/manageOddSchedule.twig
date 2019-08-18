@@ -33,8 +33,13 @@
         <td>{{ scheduleDay.day }}</td>
         <td>{{ scheduleDay.open_at }}</td>
         <td>{{ scheduleDay.duration + scheduleDay.open_at }}</td>
+        <td><a href="/deleteOddScheduleDay/{{ scheduleDay.day }}" class="deleteBtn">Удалить</a></td>
     </tr>
     {% endfor %}
 </table>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="/src/views/js/manageOddSchedule.js" type="application/javascript"></script>
 {% endblock %}

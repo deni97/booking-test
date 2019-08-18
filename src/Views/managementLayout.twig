@@ -3,8 +3,7 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="/src/views/css/managementLayout.css">
-    {% block css %}
-    {% endblock %}
+    {% block css %}{% endblock %}
 </head>
 <body>
     <div class="header">
@@ -22,4 +21,7 @@
     </div>
     {% block content %}{% endblock %}
 </body>
+
+{% block scripts %}{% endblock %}
+
 </html>

@@ -33,7 +33,7 @@
         <td>{{ scheduleDay.day }}</td>
         <td>{{ scheduleDay.open_at }}</td>
         <td>{{ scheduleDay.duration + scheduleDay.open_at }}</td>
-        <td><a href="/deleteOddScheduleDay/{{ scheduleDay.day }}" class="deleteBtn">Удалить</a></td>
+        <td><a href="/deleteOdd/{{ scheduleDay.day }}" class="deleteBtn">Удалить</a></td>
     </tr>
     {% endfor %}
 </table>

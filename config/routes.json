@@ -60,7 +60,7 @@
         "method": "addOddScheduleDay",
         "login": true
     },
-    "deleteOddScheduleDay/:day": {
+    "deleteOdd/:day": {
         "controller": "Management",
         "method": "deleteOddScheduleDay",
         "login": true,

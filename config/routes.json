@@ -50,6 +50,16 @@
         "method": "setSchedule",
         "login": true
     },
+    "oddSchedule": {
+        "controller": "Management",
+        "method": "getOddSchedule",
+        "login": true
+    },
+    "addOddScheduleDay": {
+        "controller": "Management",
+        "method": "addOddScheduleDay",
+        "login": true
+    },
     "login": {
         "controller": "Management",
         "method": "login"

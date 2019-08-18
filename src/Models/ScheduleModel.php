@@ -18,7 +18,7 @@ class ScheduleModel extends AbstractModel
     const CLASSNAME = '\Reservations\Domain\ScheduleDay';
 
     /**
-     * A classname vfor fetching OddScheduleDays.
+     * A classname for fetching OddScheduleDays.
      */
     const CLASSNAME_ODD = '\Reservations\Domain\OddScheduleDay';
 
@@ -117,6 +117,28 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
+     * A function that tries to fetch all OddScheduleDays.
+     * 
+     * @return array an array populated with OddScheduleDays
+     */
+    public function getOddSchedule(): array
+    {
+        $query = 'SELECT * FROM odd_schedule ORDER BY day';
+
+        $stmt = $this->db->prepare($query);
+
+        $stmt->execute();
+
+        $schedule = $stmt->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME_ODD);
+
+        if (empty($schedule)) {
+            throw new ScheduleException('Nothing special is coming.');
+        }
+
+        return $schedule;
+    }
+
+    /**
      * A function that tries to fetch all OddScheduleDays after a specified date.
      * <br>Currently it's of no use.
      * 
@@ -149,10 +171,10 @@ class ScheduleModel extends AbstractModel
      * 
      * @return void
      */
-    public function scheduleOddDay(string $date, int $time, int $duration): void
+    public function scheduleOddDay(string $date, int $openAt, int $duration): void
     {
         // Checks if the caller tries to schedule anything but today
-        if ($time < 0 || $time > 47) {
+        if ($openAt < 0 || $openAt > 47) {
             throw new ScheduleException('Time represented as int should belong to [0, 47] interval.');
         }
         // Checks if the caller tries to schedule today
@@ -160,15 +182,17 @@ class ScheduleModel extends AbstractModel
             throw new ScheduleException("Can\'t schedule today.");
         }
 
-        $query = 'INSERT INTO odd_schedule (day, time, duration) VALUES (:day, :time, :duration)';
+
+        $query = 'INSERT INTO odd_schedule (day, open_at, duration) VALUES (:day, :open_at, :duration)';
 
         $stmt = $this->db->prepare($query);
         
         $params = [
             'day' => $date,
-            'time' => $time,
+            'open_at' => $openAt,
             'duration' => $duration
         ];
+        var_dump($params);
 
         if (!$stmt->execute($params)) {
             throw new DbException($stmt->errorInfo()[2]);

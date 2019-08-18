@@ -5,6 +5,16 @@
 {% endblock %}
 
 {% block content %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Телефон</th>
+        <th>Номер столика</th>
+        <th>Дата</th>
+        <th>Время</th>
+        <th>Продолжительность</th>
+    </tr>
     <tr>
         <td>{{ reservation.id }}</td>
         <td>{{ reservation.name }}</td>
@@ -16,4 +26,5 @@
         <td><a href="/accept/{{ reservation.id }}">Подтвердить</a></td>
         <td><a href="/archive/{{ reservation.id }}">Отклонить</a></td>
     </tr>
+</table>
 {% endblock %}

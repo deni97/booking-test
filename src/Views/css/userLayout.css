@@ -1,0 +1,11 @@
+.main {
+    width: 40vw;
+    height: 70vh;
+    position: absolute;
+    top: 20vh;
+    left: 30vw;
+}
+
+.aside {
+    float: right;
+}

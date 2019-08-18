@@ -1,0 +1,39 @@
+#name, #phone {
+    display: block;
+    width: 100%;
+}
+
+input {
+    padding: .5em;
+    margin: .5em;
+}
+
+#durationInput {
+    vertical-align: bottom;
+    width: 8em;
+}
+
+#tableInput {
+    width: 150px;
+}
+
+.material-icons {
+    vertical-align: middle;
+}
+
+#check {
+    display: block;
+    float: right;
+}
+
+select:required:invalid {
+    color: gray;
+}
+
+option[value=""][disabled] {
+    display: none;
+}
+
+option {
+    color: black;
+}

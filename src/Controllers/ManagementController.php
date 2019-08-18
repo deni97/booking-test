@@ -3,6 +3,7 @@
 namespace Reservations\Controllers;
 
 use Reservations\Exceptions\NotFoundException;
+use Reservations\Exceptions\ScheduleException;
 use Reservations\Models\ReservationModel;
 use Reservations\Models\ScheduleModel;
 use Reservations\Models\LoginModel;
@@ -158,6 +159,77 @@ class ManagementController extends AbstractController
             ];
 
         return $this->render('manageSchedule.twig', $params);
+    }
+
+    /**
+     * A function that gets and displays the odd schedule.
+     * 
+     * @return string odd schedule input form
+     */
+    public function getOddSchedule(): string
+    {
+        $scheduleModel = new ScheduleModel($this->db);
+        // Gets odd schedule from the DB
+        try {
+            $schedule = $scheduleModel->getOddSchedule();
+        } catch (ScheduleException $e) {
+            var_dump($e->getMessage());
+            $schedule = [];
+        }
+
+        $params = [
+            'schedule' => $schedule,
+            'loggedIn' => true
+        ];
+
+        return $this->render('manageOddSchedule.twig', $params);
+    }    
+    
+    /**
+     * A function that tries to add a day to the odd schedule.
+     * 
+     * @return string rendered odd schedule by getOddSchedule()
+     */
+    public function addOddScheduleDay(): string
+    {
+        // Returns if trying to access it without submitting a form
+        if (!$this->request->isPost()) {
+            return $this->render('manageSchedule.twig', []);
+        }
+
+        $params = $this->request->getParams();
+
+        $scheduleModel = new ScheduleModel($this->db);
+        # TO-DO: exception handling
+        $scheduleModel->scheduleOddDay(
+            $params->getString('day'),
+            $params->getInt('openAt'),
+            $params->getInt('duration')
+        );
+        // Renders the odd schedule page
+        return $this->getOddSchedule();
+    }
+
+    /**
+     * A function that tries to delete a day from the odd schedule.
+     * 
+     * @return string rendered odd schedule by getOddSchedule()
+     */
+    public function deleteOddScheduleDay(string $date): string
+    {
+        # I couldn't get the string request parameter to work
+        # so I had to use an int representation
+        # TO-DO: rewrite this hack
+        $year = substr($date, 0, 4);
+        $month = substr($date, 4, 2);
+        $day = substr($date, 6, 2);
+        $date = $year . '-' . $month . '-' . $day;
+        
+        $scheduleModel = new ScheduleModel($this->db);
+        # TO-DO: exception handling
+        $scheduleModel->deleteOddScheduleDay($date);
+        // Renders the odd schedule page
+        return $this->getOddSchedule();
     }
 
     /**

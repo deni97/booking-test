@@ -2,20 +2,26 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/src/views/css/managementLayout.css">
+    {% block css %}{% endblock %}
 </head>
 <body>
-    <div style="border: solid 1px">
+    <div class="header">
         <a href="/management">Заявки</a>
         <a href="/schedule">Расписание</a>
+        <a href="/oddSchedule">Праздники</a>
         <a href="/register">Регистрация</a>
         Е Д А
         {% if loggedIn is empty %}
-        <a href="/login" style="float: right;">Войти в систему</a>
+        <a href="/login" class="authentication">Войти в систему</a>
         {% else %}
-        <a href="/logout" style="float: right;">Выйти из системы</a>
+        <a href="/logout" class="authentication">Выйти из системы</a>
         {% endif %}
         <hr>
     </div>
     {% block content %}{% endblock %}
 </body>
+
+{% block scripts %}{% endblock %}
+
 </html>

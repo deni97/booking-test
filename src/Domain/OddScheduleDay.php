@@ -6,7 +6,7 @@ class OddScheduleDay extends AbstractScheduleDay
 {
     private $day;
 
-    public function getDay(): date
+    public function getDay(): string
     {
         return $this->day;
     }

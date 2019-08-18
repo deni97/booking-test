@@ -4,46 +4,8 @@
     Е д а
 {% endblock %}
 
-{% block styles %}
-<style>
-    #name, #phone {
-        display: block;
-        width: 100%;
-    }
-
-    input {
-        padding: .5em;
-        margin: .5em;
-    }
-
-    #durationInput {
-        vertical-align: bottom;
-        width: 8em;
-    }
-
-    #tableInput {
-        width: 150px;
-    }
-
-    .material-icons {
-        vertical-align: middle;
-    }
-
-    #check {
-        display: inline;
-        float: right;
-    }
-
-    select:required:invalid {
-        color: gray;
-    }
-    option[value=""][disabled] {
-        display: none;
-    }
-    option {
-        color: black;
-    }
-</style>
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/src/views/css/reservation.css">
 {% endblock %}
 
 {% block content %}
@@ -115,73 +77,9 @@
 {% endblock %}
 
 {% block rightFloat %}
-    <div id="possibleTime">
-    </div>
+    <div id="possibleTime"></div>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-
-    let dateInput = document.getElementById("dateInput")
-
-    dateInput.addEventListener("input", () => {
-        document.getElementById("timeInput").removeAttribute('readonly')
-        document.getElementById("durationInput").removeAttribute('readonly')
-
-        document.getElementById("tablePlaceholder").removeAttribute('selected')
-        document.getElementById("tablePlaceholder").text = 'Выберите стол'
-        document.getElementById("tablePlaceholder").setAttribute('selected', true)
-
-        document.querySelectorAll(".tableOption").forEach(e => e.removeAttribute('disabled'))
-
-        document.getElementById("durationInput").removeAttribute('disabled')
-        document.getElementById("checkBtn").removeAttribute('disabled')
-
-        document.getElementById("checkBtnLbl").innerHTML = 'Показать доступное время'
-    })
-
-    let durationInput = document.getElementById("durationInput")
-
-    durationInput.addEventListener("input", () => {
-        document.getElementById("durationLabel").innerHTML = convertDuration(durationInput.value)
-
-        function convertDuration(duration) {
-            map = [
-                "никаких часов тут нет",
-                "полчаса",
-                "час",
-                "полтора часа",
-                "два часа"
-            ]
-
-            return map[duration]
-        }
-    })
-
-    let timeDisplay = document.getElementById("possibleTime")
-    let checkBtn = document.getElementById("checkBtn")
-
-    checkBtn.addEventListener("click", () => {
-        let dateNumber = (dateInput.value).replace(/-/g, "")
-        httpGetAsync("/getTimeJS/" + tableInput.value + "/" + dateNumber, (json) => {
-            possibleTimeArray = []
-            try { possibleTimeArray = JSON.parse(json) } catch (e) { console.log(e) }
-            document.getElementById("possibleTime").innerHTML = ''
-            for (let i = 0; i < possibleTimeArray.length; i++) {
-                document.getElementById("possibleTime").innerHTML += "<strong>" + possibleTimeArray[i] + "</strong><br>"
-            }
-        })
-    })
-
-    function httpGetAsync(theUrl, callback) {
-        let xmlHttp = new XMLHttpRequest()
-        xmlHttp.onreadystatechange = function () {
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                callback(xmlHttp.responseText);
-        }
-        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-        xmlHttp.send(null);
-    }
-
-    </script>
+    <script src="/src/views/js/reservation.js" type="application/javascript"></script>
 {% endblock %}

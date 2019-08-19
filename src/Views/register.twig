@@ -1,14 +1,19 @@
 {% extends 'managementLayout.twig' %}
 
 {% block content %}
+
     {% if message is defined %}
         <strong>{{ message }}</strong>
     {% endif %}
+
     <form action="/register" method="post">
         <label for="email">Email</label>
         <input type="text" name="email" id="email">
+        
         <label for="password">Password</label>
         <input type="text" name="password" id="password">
+
         <input type="submit" value="Зарегистрироваться">
     </form>
+
 {% endblock %}

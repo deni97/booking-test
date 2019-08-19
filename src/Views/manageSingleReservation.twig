@@ -23,8 +23,9 @@
         <td>{{ reservation.date }}</td>
         <td>{{ reservation.convertedTime }}</td>
         <td>{{ reservation.duration }}</td>
+        
         <td><a href="/accept/{{ reservation.id }}">Подтвердить</a></td>
         <td><a href="/archive/{{ reservation.id }}">Отклонить</a></td>
     </tr>
-</table>
+</table> 
 {% endblock %}

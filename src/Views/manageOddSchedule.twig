@@ -14,9 +14,20 @@
             <th></th>
         </tr>
         <tr>
-            <td><input type="date" name="day" /></td>
-            <td><input type="text" name="openAt" /></td>
-            <td><input type="text" name="duration" /></td>
+            <td>
+                <input type="date" 
+                name="day" />
+            </td>
+            <td>
+                <input type="time" 
+                step="1800" pattern="[0-2][0-9]:[0,3]0" 
+                name="openAt" />
+            </td>
+            <td>
+                <input type="time" 
+                step="1800" pattern="[0-2][0-9]:[0,3]0" 
+                name="duration" />
+            </td>
             
             <td><input type="submit" value="добавить" /></td>
         </tr>
@@ -28,6 +39,7 @@
 <table>
     <tr>
         <th>Дата</th>
+        <th>День недели</th>
         <th>с</th>
         <th>по</th>
     </tr>
@@ -35,8 +47,9 @@
     {% for scheduleDay in schedule %}
     <tr>
         <td>{{ scheduleDay.day }}</td>
-        <td>{{ scheduleDay.open_at }}</td>
-        <td>{{ scheduleDay.duration + scheduleDay.open_at }}</td>
+        <td>{{ scheduleDay.name }}</td>
+        <td>{{ scheduleDay.convertedTime.from }}</td>
+        <td>{{ scheduleDay.convertedTime.until }}</td>
 
         <td><a href="/deleteOdd/{{ scheduleDay.day }}" class="deleteBtn">Удалить</a></td>
     </tr>

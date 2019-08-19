@@ -8,6 +8,7 @@ use Reservations\Models\ReservationModel;
 use Reservations\Models\ScheduleModel;
 use Reservations\Models\LoginModel;
 use Reservations\Domain\ScheduleDay;
+use Reservations\Utils\TimeConverter;
 use Reservations\Core\FilteredMap;
 
 class ManagementController extends AbstractController
@@ -25,7 +26,7 @@ class ManagementController extends AbstractController
         $params = [
             'reservations' => $reservations,
             'loggedIn' => true
-            ];
+        ];
 
         return $this->render('manageReservations.twig', $params);
     }
@@ -51,7 +52,7 @@ class ManagementController extends AbstractController
         $params = [
             'reservation' => $reservation,
             'loggedIn' => true
-            ];
+        ];
 
         return $this->render('manageSingleReservation.twig', $params);
     }
@@ -150,12 +151,13 @@ class ManagementController extends AbstractController
         // i.e. 1 => 'Monday', 7 => 'Sunday'
         foreach ($schedule as $scheduleDay) {
             $scheduleDay->setName();
+            $scheduleDay->setConvertedTime();
         }
 
         $params = [
             'schedule' => $schedule,
             'loggedIn' => true
-            ];
+        ];
 
         return $this->render('manageSchedule.twig', $params);
     }
@@ -172,8 +174,12 @@ class ManagementController extends AbstractController
         try {
             $schedule = $scheduleModel->getOddSchedule();
         } catch (ScheduleException $e) {
-            var_dump($e->getMessage());
             $schedule = [];
+        }
+
+        foreach ($schedule as $scheduleDay) {
+            $scheduleDay->setName();
+            $scheduleDay->setConvertedTime();
         }
 
         $params = [
@@ -198,12 +204,19 @@ class ManagementController extends AbstractController
 
         $params = $this->request->getParams();
 
+        $openAt = $params->getString('openAt');
+        $openAt = TimeConverter::getIndex($openAt);
+
+            
+        $duration = $params->getString('duration');
+        $duration = TimeConverter::getIndex($duration) - $openAt;
+
         $scheduleModel = new ScheduleModel($this->db);
         # TO-DO: exception handling
         $scheduleModel->scheduleOddDay(
             $params->getString('day'),
-            $params->getInt('openAt'),
-            $params->getInt('duration')
+            $openAt,
+            $duration
         );
         // Renders the odd schedule page
         return $this->getOddSchedule();
@@ -271,11 +284,12 @@ class ManagementController extends AbstractController
         // and pushes copies of it with freshly set values
         // into the returned array
         $scheduleDay = new ScheduleDay();
-
         for ($i = 1; $i < 8; ++$i) { 
-            $openAt = $params->getInt('openAt' . $i);
+            $openAt = $params->getString('openAt' . $i);
+            $openAt = TimeConverter::getIndex($openAt);
             // Converts time input from [openAt; closedAt] to [openAt; duration]
-            $duration = $params->getInt('duration' . $i) - $openAt;
+            $duration = $params->getString('duration' . $i);
+            $duration = TimeConverter::getIndex($duration) - $openAt;
             // Sets fields of ScheduleDay
             $scheduleDay->setId($i)->setOpen_At($openAt)->setDuration($duration);
             // Gets a copy and pushes it in the array

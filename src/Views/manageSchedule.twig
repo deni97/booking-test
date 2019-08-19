@@ -16,11 +16,20 @@
         <tr>
             <td>{{ scheduleDay.name }}</td>
 
-            <td><input type="text" name="openAt{{ scheduleDay.id }}"
-                value="{{ scheduleDay.open_at }}" /></td>
+            <td>
+                <input 
+                type="time" 
+                step="1800" pattern="[0-2][0-9]:[0,3]0"
+                name="openAt{{ scheduleDay.id }}"
+                value="{{ scheduleDay.convertedTime.from }}" />
+            </td>
 
-            <td><input type="text" name="duration{{ scheduleDay.id }}"
-                value="{{ scheduleDay.duration + scheduleDay.open_at }}" /></td>
+            <td>
+                <input type="time" 
+                step="1800" pattern="[0-2][0-9]:[0,3]0"
+                name="duration{{ scheduleDay.id }}"
+                value="{{ scheduleDay.convertedTime.until }}" />
+            </td>
         </tr>
         {% endfor %}
     </table>

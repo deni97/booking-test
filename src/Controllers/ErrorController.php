@@ -5,7 +5,7 @@ namespace Reservations\Controllers;
 class ErrorController extends AbstractController
 {
     /**
-     * A function responsible for rendering an error page.
+     * Renders an error page.
      * 
      * @return string not found page
      */

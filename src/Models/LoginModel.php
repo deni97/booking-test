@@ -8,7 +8,7 @@ use PDO;
 class LoginModel extends AbstractModel
 {
     /**
-     * A function that tries to fetch a hash for a certain specified email.
+     * Tries to fetch a hash for a certain specified email.
      * 
      * @param string $email
      * 

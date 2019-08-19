@@ -10,7 +10,7 @@ use Reservations\Models\TESTRegisterModel;
 class TESTRegisterController extends AbstractController
 {
     /**
-     * A function that tries to register an user.
+     * Tries to register an user.
      * 
      * @return string a page displaying the result
      */

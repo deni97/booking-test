@@ -10,7 +10,7 @@ use Reservations\Exceptions\NotFoundException;
 class TESTRegisterModel extends AbstractModel
 {
     /**
-     * A function that simply inserts an email and a hashed password into the DB.
+     * Simply inserts an email and a hashed password into the DB.
      * 
      * @param string $email
      * @param string $hash hashed password

@@ -23,8 +23,8 @@ class ScheduleModel extends AbstractModel
     const CLASSNAME_ODD = '\Reservations\Domain\OddScheduleDay';
 
     /**
-     * A function that tries to get an OddScheduleDay for a specified date,
-     * <br>goes for a regular one on fail. 
+     * Tries to get an OddScheduleDay for a specified date, 
+     * <br>goes for a regular one on fail.
      * 
      * @param string $date MySQL-compatible date string
      * 
@@ -43,7 +43,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to fetch schedule for a specified day of the week.
+     * Tries to fetch schedule for a specified day of the week.
      * 
      * @param integer $day number representation of a day of the week
      * 
@@ -71,7 +71,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries too fetch all ScheduleDays for a week.
+     * Tries too fetch all ScheduleDays for a week.
      * 
      * @return array a set of ScheduleDays representing a week
      */
@@ -93,7 +93,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to fetch an OddScheduleDay on the specified date.
+     * Tries to fetch an OddScheduleDay on the specified date.
      * 
      * @param string $date MySQL-compatible date string
      * 
@@ -117,7 +117,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to fetch all OddScheduleDays.
+     * Tries to fetch all OddScheduleDays.
      * 
      * @return array an array populated with OddScheduleDays
      */
@@ -139,8 +139,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to fetch all OddScheduleDays after a specified date.
-     * <br>Currently it's of no use.
+     * Tries to fetch all OddScheduleDays after a specified date.
      * 
      * @param string $date MySQL-compatible date string
      * 
@@ -163,7 +162,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to schedule an odd day.
+     * Tries to schedule an odd day.
      * 
      * @param string $date MySQL-compatible date string
      * @param integer $time an int representation of time
@@ -199,7 +198,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to remove a day from the odd schedule.
+     * Tries to remove a day from the odd schedule.
      * 
      * @param string $date MySQL-compatible date string
      * 
@@ -221,7 +220,7 @@ class ScheduleModel extends AbstractModel
     }
 
     /**
-     * A function that tries to update a week's schedule in the DB.
+     * Tries to update a week's schedule in the DB.
      * 
      * @param array $schedule a set of ScheduleDays representing a week
      * 

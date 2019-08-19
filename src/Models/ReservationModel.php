@@ -32,7 +32,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that fetches a single reservation from the DB.
+     * Fetches a single reservation from the DB.
      * 
      * @param integer $id reservation id
      * 
@@ -56,7 +56,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that fetches all reservations from the DB.
+     * Fetches all reservations from the DB.
      * 
      * @return array an array of Reservation objects
      */
@@ -71,7 +71,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that fetches all reservations on the specified day.
+     * Fetches all reservations on the specified day from the DB.
      * 
      * @param date $date
      * 
@@ -94,7 +94,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that fetches all reservations on the specified day and table.
+     * Fetches all reservations on the specified day and table from the DB.
      * 
      * @param string $date MySQL-compatible date string
      * @param integer $table_id
@@ -117,7 +117,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that fetches all table ids from the DB.
+     * Fetches all table ids from the DB.
      * 
      * @return array a set of integers representing table ids
      */
@@ -134,8 +134,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that calculates all possible times for a reservation
-     * <br>on the specified day and table.
+     * Calculates all possible times for a reservation on the specified day and table.
      * 
      * @param string $date MySQL-compatible date string
      * @param int $table_id 
@@ -174,7 +173,7 @@ class ReservationModel extends AbstractModel
     }
 
     /**
-     * A function that tries to archive a reservation.
+     * Tries to archive a reservation.
      * 
      * This method uses transaction on the current DB to ensure archiving. 
      * <br>Also it uses a single $stmt variable for both current DB and archive DB.
@@ -228,7 +227,7 @@ SQL;
     }
 
     /**
-     * A function that tries to make a reservation.
+     * Tries to make a reservation.
      * 
      * @param Reservation $reservation 
      * 

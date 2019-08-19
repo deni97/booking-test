@@ -15,8 +15,7 @@ use Reservations\Utils\TimeConverter;
 class UserController extends AbstractController
 {
     /**
-     * A function that gets table ids from the DB and 
-     * <br>renders a form for reservation.
+     * Gets table ids from the DB and renders a form for reservation.
      * 
      * @return string reservation form
      */
@@ -33,8 +32,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * An API that returns all possible reservations times
-     * <br>for a specified table id and date.
+     * Returns all possible reservations times for a specified table id and date.
      * 
      * @param integer $tableId an id of the table
      * @param string $date YYYYMMDD formatted date string
@@ -67,7 +65,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * A function that tries to make a reservation. 
+     * Tries to make a reservation. 
      * 
      * Renders a page displaying an id of the freshly inserted reservation on success,
      * <br>and returns with an error message on fail.

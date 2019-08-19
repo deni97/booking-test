@@ -13,7 +13,7 @@ use Reservations\Core\FilteredMap;
 class ManagementController extends AbstractController
 {   
     /**
-     * A function that gets and displays all reservations.
+     * Gets and displays all reservations.
      * 
      * @return string reservations, rendered html
      */
@@ -31,7 +31,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that gets and displays a single reservation by id.
+     * Gets and displays a single reservation by id.
      * 
      * @param integer $id an id of the reservation
      * @return string single reservation, rendered html
@@ -57,9 +57,8 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that tries to login a user by checking
-     * <br>if email is present in the DB, and verifies hash
-     * <br>against the input password if so.
+     * Tries to login a user by checking if email is present in the DB, 
+     * <br>and verifies hash against the input password if so.
      * 
      * @return string reservations, html rendered by getReservations()
      */
@@ -107,7 +106,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that logs out user by expiring the user cookie.
+     * Logs out user by expiring the user cookie.
      * 
      * @return string login form, html rendered by login()
      */
@@ -121,7 +120,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that tries to archive an identified reservation
+     * Tries to archive an identified reservation
      * <br>by copying it in the archive DB and deleting it from the current DB.
      * 
      * @param integer $id an id of the reservation
@@ -137,7 +136,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that gets and displays a whole week's schedule.
+     * Gets and displays a whole week's schedule.
      * 
      * @return string schedule input form
      */
@@ -162,7 +161,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that gets and displays the odd schedule.
+     * Gets and displays the odd schedule.
      * 
      * @return string odd schedule input form
      */
@@ -186,7 +185,7 @@ class ManagementController extends AbstractController
     }    
     
     /**
-     * A function that tries to add a day to the odd schedule.
+     * Tries to add a day to the odd schedule.
      * 
      * @return string rendered odd schedule by getOddSchedule()
      */
@@ -211,7 +210,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that tries to delete a day from the odd schedule.
+     * Tries to delete a day from the odd schedule.
      * 
      * @return string rendered odd schedule by getOddSchedule()
      */
@@ -233,7 +232,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * A function that tries to update the schedule.
+     * Tries to update the schedule.
      * 
      * @return string rendered schedule by getSchedule()
      */

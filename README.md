@@ -45,3 +45,7 @@
 
 <strong>"/register"</strong>            - быстрая регистрация.
 </pre>
+
+#Misc
+
+Основа MVC-фреймворка из книги <strong>Learning PHP 7, Lopez A., 2016г.</strong>

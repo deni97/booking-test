@@ -49,3 +49,29 @@
 # Misc
 
 Основа MVC-фреймворка из книги <strong>Learning PHP 7, Lopez A., 2016г.</strong>
+
+Запускался на WAMP стеке с помощью WampServer.<br>
+В <code>httpd-vhosts.conf</code> Apache дописывалось следующее:
+<pre> 
+&lt;Directory "${INSTALL_DIR}/www/"&gt;
+    Options +Indexes +Includes +FollowSymLinks +MultiViews
+    AllowOverride All
+    Require all granted
+    
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.+)$ index.php [QSA,L]
+&lt;/Directory&gt;
+  
+&lt;Directory "${INSTALL_DIR}/www/src/views/js"&gt;
+    Satisfy Any
+    Allow from all
+&lt;/Directory&gt;
+  
+&lt;Directory "${INSTALL_DIR}/www/src/views/css"&gt;
+    Satisfy Any
+    Allow from all
+&lt;/Directory&gt;
+</pre>
